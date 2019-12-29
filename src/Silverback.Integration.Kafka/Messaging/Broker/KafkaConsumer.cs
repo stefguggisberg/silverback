@@ -42,7 +42,7 @@ namespace Silverback.Messaging.Broker
             _innerConsumer.Received += OnMessageReceived;
             _innerConsumer.StartConsuming();
 
-            _logger.LogTrace("Connected consumer to topic {topic}. (BootstrapServers=\"{bootstrapServers}\")", Endpoint.Name, Endpoint.Configuration.BootstrapServers);
+            _logger.LogDebug("Connected consumer to topic {topic}. (BootstrapServers=\"{bootstrapServers}\")", Endpoint.Name, Endpoint.Configuration.BootstrapServers);
         }
 
         /// <inheritdoc cref="Consumer"/>
@@ -59,7 +59,7 @@ namespace Silverback.Messaging.Broker
             _innerConsumer.Dispose();
             _innerConsumer = null;
 
-            _logger.LogTrace("Disconnected consumer from topic {topic}. (BootstrapServers=\"{bootstrapServers}\")", Endpoint.Name, Endpoint.Configuration.BootstrapServers);
+            _logger.LogDebug("Disconnected consumer from topic {topic}. (BootstrapServers=\"{bootstrapServers}\")", Endpoint.Name, Endpoint.Configuration.BootstrapServers);
         }
 
         public void Dispose() => Disconnect();

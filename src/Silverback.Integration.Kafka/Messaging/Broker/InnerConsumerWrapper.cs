@@ -119,7 +119,7 @@ namespace Silverback.Messaging.Broker
                         }
                         else
                         {
-                            _logger.LogTrace("Successfully committed offset {topic} {partition} @{offset}.",
+                            _logger.LogDebug("Successfully committed offset {topic} {partition} @{offset}.",
                                 offset.Topic, offset.Partition, offset.Offset);
                         }
                     }
@@ -185,7 +185,7 @@ namespace Silverback.Messaging.Broker
             }
 
             _consumedAtLeastOnce = true;
-            _logger.LogTrace("Consuming message: {topic} {partition} @{offset}", result.Topic, result.Partition, result.Offset);
+            _logger.LogDebug("Consuming message: {topic} {partition} @{offset}", result.Topic, result.Partition, result.Offset);
 
             if (Received != null)
                 await Received.Invoke(result.Message, result.TopicPartitionOffset);
