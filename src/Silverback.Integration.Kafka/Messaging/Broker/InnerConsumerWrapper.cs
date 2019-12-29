@@ -179,13 +179,13 @@ namespace Silverback.Messaging.Broker
 
             if (result.IsPartitionEOF)
             {
-                _logger.LogInformation("Partition EOF reached: {topic} {partition} @{offset}", result.Topic, result.Partition,
+                _logger.LogInformation("Partition EOF reached: {topic} {partition} @{offset}.", result.Topic, result.Partition,
                     result.Offset);
                 return;
             }
 
             _consumedAtLeastOnce = true;
-            _logger.LogDebug("Consuming message: {topic} {partition} @{offset}", result.Topic, result.Partition, result.Offset);
+            _logger.LogDebug("Consuming message: {topic} {partition} @{offset}.", result.Topic, result.Partition, result.Offset);
 
             if (Received != null)
                 await Received.Invoke(result.Message, result.TopicPartitionOffset);
