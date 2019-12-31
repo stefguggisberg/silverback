@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 Sergio Aquilini
+﻿// Copyright (c) 2020 Sergio Aquilini
 // This code is licensed under MIT license (see LICENSE file for details)
 
 using System;
@@ -40,12 +40,12 @@ namespace Silverback.Messaging.Broker
             _endpoints.Add(endpoint);
         }
 
-        public void Commit(IEnumerable<Confluent.Kafka.TopicPartitionOffset> offsets) => 
+        public void Commit(IEnumerable<Confluent.Kafka.TopicPartitionOffset> offsets) =>
             _innerConsumer.Commit(offsets);
 
         public void StoreOffset(IEnumerable<Confluent.Kafka.TopicPartitionOffset> offsets) =>
             offsets.ForEach(_innerConsumer.StoreOffset);
-        
+
         public void CommitAll()
         {
             if (!_consumedAtLeastOnce) return;
@@ -73,7 +73,7 @@ namespace Silverback.Messaging.Broker
                 return;
 
             _cancellationTokenSource.Cancel();
-            
+
             // Wait until stopped for real before returning to avoid
             // exceptions when the process exits prematurely
             while (_consuming) Thread.Sleep(100);
@@ -132,12 +132,9 @@ namespace Silverback.Messaging.Broker
                     if (!_consuming) return;
 
                     _logger.Log(e.IsFatal ? LogLevel.Critical : LogLevel.Error,
-                            "Error in Kafka consumer: {reason}.", e.Reason);
+                        "Error in Kafka consumer: {reason}.", e.Reason);
                 })
-                .SetStatisticsHandler((_, json) =>
-                {
-                    _logger.LogInformation($"Statistics: {json}");
-                })
+                .SetStatisticsHandler((_, json) => { _logger.LogInformation($"Statistics: {json}"); })
                 .Build();
         }
 
@@ -179,13 +176,15 @@ namespace Silverback.Messaging.Broker
 
             if (result.IsPartitionEOF)
             {
-                _logger.LogInformation("Partition EOF reached: {topic} {partition} @{offset}.", result.Topic, result.Partition,
+                _logger.LogInformation("Partition EOF reached: {topic} {partition} @{offset}.", result.Topic,
+                    result.Partition,
                     result.Offset);
                 return;
             }
 
             _consumedAtLeastOnce = true;
-            _logger.LogDebug("Consuming message: {topic} {partition} @{offset}.", result.Topic, result.Partition, result.Offset);
+            _logger.LogDebug("Consuming message: {topic} {partition} @{offset}.", result.Topic, result.Partition,
+                result.Offset);
 
             if (Received != null)
                 await Received.Invoke(result.Message, result.TopicPartitionOffset);

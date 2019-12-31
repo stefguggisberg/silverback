@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 Sergio Aquilini
+﻿// Copyright (c) 2020 Sergio Aquilini
 // This code is licensed under MIT license (see LICENSE file for details)
 
 using System;
@@ -27,7 +27,7 @@ namespace Silverback.Messaging.Broker
             _logger = logger;
         }
 
-        /// <inheritdoc cref="Consumer"/>
+        /// <inheritdoc cref="Consumer" />
         public override void Connect()
         {
             if (_innerConsumer != null)
@@ -42,10 +42,11 @@ namespace Silverback.Messaging.Broker
             _innerConsumer.Received += OnMessageReceived;
             _innerConsumer.StartConsuming();
 
-            _logger.LogDebug("Connected consumer to topic {topic}. (BootstrapServers=\"{bootstrapServers}\")", Endpoint.Name, Endpoint.Configuration.BootstrapServers);
+            _logger.LogDebug("Connected consumer to topic {topic}. (BootstrapServers=\"{bootstrapServers}\")",
+                Endpoint.Name, Endpoint.Configuration.BootstrapServers);
         }
 
-        /// <inheritdoc cref="Consumer"/>
+        /// <inheritdoc cref="Consumer" />
         public override void Disconnect()
         {
             if (_innerConsumer == null)
@@ -59,22 +60,28 @@ namespace Silverback.Messaging.Broker
             _innerConsumer.Dispose();
             _innerConsumer = null;
 
-            _logger.LogDebug("Disconnected consumer from topic {topic}. (BootstrapServers=\"{bootstrapServers}\")", Endpoint.Name, Endpoint.Configuration.BootstrapServers);
+            _logger.LogDebug("Disconnected consumer from topic {topic}. (BootstrapServers=\"{bootstrapServers}\")",
+                Endpoint.Name, Endpoint.Configuration.BootstrapServers);
         }
 
         public void Dispose() => Disconnect();
 
-        private async Task OnMessageReceived(Confluent.Kafka.Message<byte[], byte[]> message, Confluent.Kafka.TopicPartitionOffset tpo)
+        private async Task OnMessageReceived(
+            Confluent.Kafka.Message<byte[], byte[]> message,
+            Confluent.Kafka.TopicPartitionOffset tpo)
         {
             // Checking if the message was sent to the subscribed topic is necessary
             // when reusing the same consumer for multiple topics.
-            if (!Endpoint.Names.Any(endpointName => tpo.Topic.Equals(endpointName, StringComparison.InvariantCultureIgnoreCase)))
+            if (!Endpoint.Names.Any(endpointName =>
+                tpo.Topic.Equals(endpointName, StringComparison.InvariantCultureIgnoreCase)))
                 return;
 
             await TryHandleMessage(message, tpo);
         }
 
-        private async Task TryHandleMessage(Confluent.Kafka.Message<byte[], byte[]> message, Confluent.Kafka.TopicPartitionOffset tpo)
+        private async Task TryHandleMessage(
+            Confluent.Kafka.Message<byte[], byte[]> message,
+            Confluent.Kafka.TopicPartitionOffset tpo)
         {
             KafkaOffset offset = null;
 
@@ -82,10 +89,10 @@ namespace Silverback.Messaging.Broker
             {
                 _messagesSinceCommit++;
                 offset = new KafkaOffset(tpo);
-            
+
                 await HandleMessage(
-                    message.Value, 
-                    message.Headers.ToSilverbackHeaders(), 
+                    message.Value,
+                    message.Headers.ToSilverbackHeaders(),
                     offset);
             }
             catch (Exception ex)
@@ -99,7 +106,7 @@ namespace Silverback.Messaging.Broker
             }
         }
 
-        /// <inheritdoc cref="Consumer{TBroker,TEndpoint,TOffset}"/>
+        /// <inheritdoc cref="Consumer{TBroker,TEndpoint,TOffset}" />
         protected override Task Commit(IEnumerable<KafkaOffset> offsets)
         {
             var lastOffsets = offsets
@@ -120,7 +127,7 @@ namespace Silverback.Messaging.Broker
             return Task.CompletedTask;
         }
 
-        /// <inheritdoc cref="Consumer{TBroker,TEndpoint,TOffset}"/>
+        /// <inheritdoc cref="Consumer{TBroker,TEndpoint,TOffset}" />
         protected override Task Rollback(IEnumerable<KafkaOffset> offsets)
         {
             // Nothing to do here. With Kafka the uncommitted messages will be implicitly re-consumed. 

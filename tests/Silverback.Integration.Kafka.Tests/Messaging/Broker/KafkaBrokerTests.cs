@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 Sergio Aquilini
+﻿// Copyright (c) 2020 Sergio Aquilini
 // This code is licensed under MIT license (see LICENSE file for details)
 
 using System.Linq;
@@ -15,8 +15,8 @@ namespace Silverback.Tests.Integration.Kafka.Messaging.Broker
     public class KafkaBrokerTests
     {
         private readonly KafkaBroker _broker = new KafkaBroker(
-            new MessageKeyProvider(new [] { new DefaultPropertiesMessageKeyProvider()}), 
-            Enumerable.Empty<IBrokerBehavior>(), 
+            new MessageKeyProvider(new[] { new DefaultPropertiesMessageKeyProvider() }),
+            Enumerable.Empty<IBrokerBehavior>(),
             NullLoggerFactory.Instance, new MessageLogger());
 
         [Fact]
@@ -89,6 +89,7 @@ namespace Silverback.Tests.Integration.Kafka.Messaging.Broker
             });
             producer2.Should().NotBeSameAs(producer);
         }
+
         [Fact]
         public void GetConsumer_SomeEndpoint_ConsumerIsReturned()
         {

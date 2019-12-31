@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 Sergio Aquilini
+﻿// Copyright (c) 2020 Sergio Aquilini
 // This code is licensed under MIT license (see LICENSE file for details)
 
 using System.Linq;
@@ -16,7 +16,7 @@ namespace Silverback.Tests.Integration.Kafka.Messaging.Broker
     {
         private readonly KafkaBroker _broker = new KafkaBroker(
             new MessageKeyProvider(new[] { new DefaultPropertiesMessageKeyProvider() }),
-            Enumerable.Empty<IBrokerBehavior>(), 
+            Enumerable.Empty<IBrokerBehavior>(),
             NullLoggerFactory.Instance, new MessageLogger());
 
         [Fact]
